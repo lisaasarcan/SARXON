@@ -1,0 +1,1746 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SARXON — Clean Skincare</title>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600;700&family=Playfair+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0D0D0B;
+    --dark: #1A1A17;
+    --volcanic: #2E2D2A;
+    --gray: #4A4845;
+    --sand: #C9B99A;
+    --light-sand: #E8DDD0;
+    --cream: #F5F2EC;
+    --white: #FAFAF8;
+    --text-muted: #888880;
+    --text-dim: #555550;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Jost', sans-serif;
+    background: var(--black);
+    color: var(--cream);
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom Cursor */
+  .cursor {
+    width: 8px; height: 8px;
+    background: var(--sand);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: width 0.3s, height 0.3s, background 0.3s;
+  }
+  .cursor-follower {
+    width: 32px; height: 32px;
+    border: 1px solid var(--sand);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: all 0.15s ease;
+    opacity: 0.5;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 24px 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(to bottom, rgba(13,13,11,0.95), transparent);
+    backdrop-filter: blur(20px);
+  }
+
+  .nav-logo {
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 6px;
+    color: var(--white);
+    text-decoration: none;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 40px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--text-muted);
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color 0.3s;
+  }
+
+  .nav-links a:hover { color: var(--sand); }
+
+  .nav-actions {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+  }
+
+  .nav-lang {
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: color 0.3s;
+  }
+  .nav-lang:hover { color: var(--sand); }
+  .nav-lang.active { color: var(--sand); }
+
+  .nav-cart {
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--cream);
+    text-decoration: none;
+    border: 0.5px solid var(--volcanic);
+    padding: 8px 20px;
+    transition: all 0.3s;
+  }
+  .nav-cart:hover {
+    border-color: var(--sand);
+    color: var(--sand);
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    padding: 120px 60px 80px;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 100%, rgba(201,185,154,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 40% at 80% 20%, rgba(201,185,154,0.04) 0%, transparent 50%);
+  }
+
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+    max-width: 1200px;
+    width: 100%;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-content { }
+
+  .hero-eyebrow {
+    font-size: 10px;
+    letter-spacing: 5px;
+    color: var(--sand);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    opacity: 0;
+    animation: fadeUp 1s 0.3s forwards;
+  }
+
+  .hero-title {
+    font-size: clamp(52px, 7vw, 88px);
+    font-weight: 500;
+    line-height: 0.95;
+    letter-spacing: -2px;
+    color: var(--white);
+    margin-bottom: 32px;
+    opacity: 0;
+    animation: fadeUp 1s 0.5s forwards;
+  }
+
+  .hero-title em {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    color: var(--sand);
+    font-weight: 400;
+  }
+
+  .hero-subtitle {
+    font-size: 14px;
+    line-height: 1.8;
+    color: var(--text-muted);
+    max-width: 400px;
+    margin-bottom: 48px;
+    font-weight: 300;
+    opacity: 0;
+    animation: fadeUp 1s 0.7s forwards;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    opacity: 0;
+    animation: fadeUp 1s 0.9s forwards;
+  }
+
+  .btn-primary {
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--black);
+    background: var(--sand);
+    padding: 16px 40px;
+    text-decoration: none;
+    transition: all 0.3s;
+    font-weight: 500;
+  }
+  .btn-primary:hover {
+    background: var(--light-sand);
+    transform: translateY(-2px);
+  }
+
+  .btn-secondary {
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    text-decoration: none;
+    padding: 16px 0;
+    border-bottom: 0.5px solid var(--volcanic);
+    transition: all 0.3s;
+  }
+  .btn-secondary:hover {
+    color: var(--cream);
+    border-color: var(--gray);
+  }
+
+  .hero-visual {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    opacity: 0;
+    animation: fadeIn 1.5s 0.8s forwards;
+  }
+
+  .product-showcase {
+    position: relative;
+    width: 100%;
+    max-width: 480px;
+  }
+
+  .product-card-3d {
+    background: linear-gradient(135deg, var(--volcanic) 0%, var(--dark) 100%);
+    border: 0.5px solid rgba(201,185,154,0.15);
+    border-radius: 4px;
+    padding: 48px 40px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.6s ease;
+  }
+
+  .product-card-3d::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(201,185,154,0.05) 0%, transparent 60%);
+  }
+
+  .product-card-3d:hover {
+    transform: perspective(1000px) rotateY(-5deg) rotateX(2deg);
+  }
+
+  .pc-brand {
+    font-size: 9px;
+    letter-spacing: 5px;
+    color: rgba(201,185,154,0.5);
+    margin-bottom: 16px;
+  }
+
+  .pc-line {
+    height: 0.5px;
+    background: rgba(201,185,154,0.2);
+    margin-bottom: 20px;
+  }
+
+  .pc-name {
+    font-size: 44px;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 6px;
+    letter-spacing: -1px;
+  }
+
+  .pc-desc {
+    font-size: 11px;
+    color: rgba(201,185,154,0.6);
+    margin-bottom: 12px;
+    letter-spacing: 1px;
+  }
+
+  .pc-line2 {
+    height: 0.5px;
+    background: rgba(255,255,255,0.05);
+    margin-bottom: 12px;
+  }
+
+  .pc-benefit {
+    font-size: 10px;
+    color: rgba(201,185,154,0.4);
+    font-style: italic;
+    margin-bottom: 24px;
+  }
+
+  .pc-volume {
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: rgba(255,255,255,0.2);
+  }
+
+  .floating-badges {
+    position: absolute;
+    right: -20px;
+    top: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .badge {
+    background: var(--black);
+    border: 0.5px solid var(--volcanic);
+    padding: 8px 14px;
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--text-muted);
+    white-space: nowrap;
+    animation: float 3s ease-in-out infinite;
+  }
+
+  .badge:nth-child(2) { animation-delay: 0.5s; }
+  .badge:nth-child(3) { animation-delay: 1s; }
+
+  .hero-scroll {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    opacity: 0;
+    animation: fadeIn 1s 1.5s forwards;
+  }
+
+  .scroll-line {
+    width: 0.5px;
+    height: 40px;
+    background: linear-gradient(to bottom, var(--sand), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+
+  .scroll-text {
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+
+  /* MARQUEE */
+  .marquee-section {
+    padding: 24px 0;
+    border-top: 0.5px solid var(--volcanic);
+    border-bottom: 0.5px solid var(--volcanic);
+    overflow: hidden;
+    background: var(--dark);
+  }
+
+  .marquee-track {
+    display: flex;
+    gap: 60px;
+    animation: marquee 20s linear infinite;
+    white-space: nowrap;
+  }
+
+  .marquee-item {
+    font-size: 10px;
+    letter-spacing: 4px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
+
+  .marquee-dot {
+    color: var(--sand);
+  }
+
+  /* PRODUCTS SECTION */
+  .section {
+    padding: 120px 60px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 64px;
+  }
+
+  .section-eyebrow {
+    font-size: 10px;
+    letter-spacing: 4px;
+    color: var(--sand);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .section-title {
+    font-size: clamp(32px, 4vw, 52px);
+    font-weight: 500;
+    letter-spacing: -1px;
+    color: var(--white);
+    line-height: 1.1;
+  }
+
+  .section-title em {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    color: var(--sand);
+    font-weight: 400;
+  }
+
+  .section-link {
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--text-muted);
+    text-decoration: none;
+    text-transform: uppercase;
+    border-bottom: 0.5px solid var(--volcanic);
+    padding-bottom: 4px;
+    transition: all 0.3s;
+    white-space: nowrap;
+  }
+  .section-link:hover { color: var(--sand); border-color: var(--sand); }
+
+  /* Product Grid */
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+
+  .product-item {
+    background: var(--dark);
+    border: 0.5px solid var(--volcanic);
+    padding: 48px 40px;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+    group: true;
+  }
+
+  .product-item::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(201,185,154,0.05) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+
+  .product-item:hover::before { opacity: 1; }
+  .product-item:hover { border-color: rgba(201,185,154,0.3); transform: translateY(-4px); }
+
+  .pi-number {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    margin-bottom: 32px;
+  }
+
+  .pi-brand {
+    font-size: 8px;
+    letter-spacing: 4px;
+    color: rgba(201,185,154,0.4);
+    margin-bottom: 8px;
+  }
+
+  .pi-line {
+    height: 0.5px;
+    background: var(--volcanic);
+    margin-bottom: 16px;
+    transition: background 0.3s;
+  }
+
+  .product-item:hover .pi-line {
+    background: rgba(201,185,154,0.3);
+  }
+
+  .pi-name {
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 6px;
+    letter-spacing: -0.5px;
+  }
+
+  .pi-desc {
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+
+  .pi-line2 {
+    height: 0.5px;
+    background: rgba(255,255,255,0.04);
+    margin-bottom: 8px;
+  }
+
+  .pi-benefit {
+    font-size: 10px;
+    color: rgba(201,185,154,0.4);
+    font-style: italic;
+    margin-bottom: 24px;
+  }
+
+  .pi-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .pi-price {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--cream);
+  }
+
+  .pi-add {
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--sand);
+    text-transform: uppercase;
+    opacity: 0;
+    transform: translateX(-10px);
+    transition: all 0.3s;
+  }
+
+  .product-item:hover .pi-add {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  /* ROUTINE SECTION */
+  .routine-section {
+    padding: 120px 60px;
+    background: var(--dark);
+    border-top: 0.5px solid var(--volcanic);
+    border-bottom: 0.5px solid var(--volcanic);
+  }
+
+  .routine-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .routine-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+    margin-top: 64px;
+  }
+
+  .routine-steps { }
+
+  .routine-step {
+    display: flex;
+    gap: 24px;
+    padding: 24px 0;
+    border-bottom: 0.5px solid var(--volcanic);
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  .routine-step:hover { padding-left: 8px; }
+
+  .rs-num {
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--sand);
+    width: 24px;
+    flex-shrink: 0;
+    margin-top: 4px;
+  }
+
+  .rs-content { flex: 1; }
+
+  .rs-name {
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--white);
+    margin-bottom: 4px;
+  }
+
+  .rs-desc {
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+  }
+
+  .rs-time {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    white-space: nowrap;
+    margin-top: 4px;
+  }
+
+  .routine-info {
+    position: sticky;
+    top: 100px;
+  }
+
+  .routine-card {
+    background: var(--black);
+    border: 0.5px solid var(--volcanic);
+    padding: 48px;
+  }
+
+  .rc-label {
+    font-size: 9px;
+    letter-spacing: 4px;
+    color: var(--sand);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+
+  .rc-title {
+    font-size: 36px;
+    font-weight: 500;
+    color: var(--white);
+    margin-bottom: 16px;
+    letter-spacing: -0.5px;
+  }
+
+  .rc-desc {
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--text-muted);
+    margin-bottom: 32px;
+    font-weight: 300;
+  }
+
+  .rc-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .rc-tag {
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--text-muted);
+    border: 0.5px solid var(--volcanic);
+    padding: 6px 14px;
+    text-transform: uppercase;
+  }
+
+  /* ABOUT SECTION */
+  .about-section {
+    padding: 160px 60px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 100px;
+    align-items: center;
+  }
+
+  .about-content { }
+
+  .about-title {
+    font-size: clamp(36px, 4vw, 56px);
+    font-weight: 500;
+    color: var(--white);
+    line-height: 1.1;
+    letter-spacing: -1px;
+    margin-bottom: 32px;
+  }
+
+  .about-title em {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    color: var(--sand);
+    font-weight: 400;
+  }
+
+  .about-text {
+    font-size: 14px;
+    line-height: 1.9;
+    color: var(--text-muted);
+    font-weight: 300;
+    margin-bottom: 48px;
+  }
+
+  .about-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+  }
+
+  .stat { }
+
+  .stat-num {
+    font-size: 36px;
+    font-weight: 600;
+    color: var(--sand);
+    letter-spacing: -1px;
+    margin-bottom: 4px;
+  }
+
+  .stat-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+
+  .about-visual {
+    position: relative;
+  }
+
+  .about-card {
+    background: var(--dark);
+    border: 0.5px solid var(--volcanic);
+    padding: 60px 48px;
+    position: relative;
+  }
+
+  .about-card::after {
+    content: '';
+    position: absolute;
+    bottom: -16px;
+    right: -16px;
+    width: 100%;
+    height: 100%;
+    border: 0.5px solid var(--volcanic);
+    z-index: -1;
+  }
+
+  .ac-quote {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 28px;
+    color: var(--white);
+    line-height: 1.4;
+    margin-bottom: 32px;
+  }
+
+  .ac-author {
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--sand);
+    text-transform: uppercase;
+  }
+
+  /* INGREDIENTS */
+  .ingredients-section {
+    padding: 120px 60px;
+    background: var(--dark);
+    border-top: 0.5px solid var(--volcanic);
+  }
+
+  .ingredients-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .ingredients-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+    margin-top: 64px;
+  }
+
+  .ingredient-card {
+    background: var(--black);
+    border: 0.5px solid var(--volcanic);
+    padding: 40px 32px;
+    transition: all 0.3s;
+  }
+
+  .ingredient-card:hover {
+    border-color: rgba(201,185,154,0.3);
+    transform: translateY(-4px);
+  }
+
+  .ic-icon {
+    font-size: 32px;
+    margin-bottom: 20px;
+  }
+
+  .ic-name {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--white);
+    margin-bottom: 6px;
+  }
+
+  .ic-origin {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--sand);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .ic-desc {
+    font-size: 12px;
+    line-height: 1.7;
+    color: var(--text-muted);
+    font-weight: 300;
+  }
+
+  /* NEWSLETTER */
+  .newsletter-section {
+    padding: 120px 60px;
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .nl-eyebrow {
+    font-size: 10px;
+    letter-spacing: 4px;
+    color: var(--sand);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+
+  .nl-title {
+    font-size: clamp(36px, 4vw, 52px);
+    font-weight: 500;
+    color: var(--white);
+    letter-spacing: -1px;
+    margin-bottom: 16px;
+  }
+
+  .nl-title em {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    color: var(--sand);
+    font-weight: 400;
+  }
+
+  .nl-desc {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 48px;
+    font-weight: 300;
+  }
+
+  .nl-form {
+    display: flex;
+    gap: 0;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  .nl-input {
+    flex: 1;
+    background: var(--dark);
+    border: 0.5px solid var(--volcanic);
+    border-right: none;
+    padding: 16px 24px;
+    font-family: 'Jost', sans-serif;
+    font-size: 13px;
+    color: var(--cream);
+    outline: none;
+    transition: border-color 0.3s;
+  }
+
+  .nl-input:focus { border-color: rgba(201,185,154,0.4); }
+  .nl-input::placeholder { color: var(--text-dim); }
+
+  .nl-btn {
+    background: var(--sand);
+    border: none;
+    padding: 16px 32px;
+    font-family: 'Jost', sans-serif;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--black);
+    cursor: pointer;
+    font-weight: 500;
+    transition: background 0.3s;
+  }
+
+  .nl-btn:hover { background: var(--light-sand); }
+
+  /* FOOTER */
+  footer {
+    background: var(--dark);
+    border-top: 0.5px solid var(--volcanic);
+    padding: 80px 60px 40px;
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 60px;
+    max-width: 1200px;
+    margin: 0 auto 60px;
+  }
+
+  .footer-brand { }
+
+  .footer-logo {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: 6px;
+    color: var(--white);
+    margin-bottom: 16px;
+  }
+
+  .footer-tagline {
+    font-size: 12px;
+    color: var(--text-dim);
+    font-style: italic;
+    font-family: 'Playfair Display', serif;
+    margin-bottom: 24px;
+  }
+
+  .footer-social {
+    display: flex;
+    gap: 16px;
+  }
+
+  .social-link {
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--text-muted);
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color 0.3s;
+  }
+  .social-link:hover { color: var(--sand); }
+
+  .footer-col-title {
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--sand);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .footer-links {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .footer-links a {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.3s;
+    font-weight: 300;
+  }
+  .footer-links a:hover { color: var(--cream); }
+
+  .footer-bottom {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-top: 32px;
+    border-top: 0.5px solid var(--volcanic);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-copy {
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+  }
+
+  .footer-legal {
+    display: flex;
+    gap: 24px;
+  }
+
+  .footer-legal a {
+    font-size: 11px;
+    color: var(--text-dim);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .footer-legal a:hover { color: var(--sand); }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  /* Scroll reveal */
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: all 0.8s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Language switcher */
+  .lang-de, .lang-en { display: none; }
+  body.lang-de .lang-de { display: block; }
+  body.lang-en .lang-en { display: block; }
+  body.lang-de .lang-de-inline { display: inline; }
+  body.lang-en .lang-en-inline { display: inline; }
+  .lang-de-inline, .lang-en-inline { display: none; }
+</style>
+</head>
+<body class="lang-de">
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-follower" id="cursorFollower"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">SARXON</a>
+  <ul class="nav-links">
+    <li><a href="#products">
+      <span class="lang-de-inline">Produkte</span>
+      <span class="lang-en-inline">Products</span>
+    </a></li>
+    <li><a href="#routine">
+      <span class="lang-de-inline">Routine</span>
+      <span class="lang-en-inline">Routine</span>
+    </a></li>
+    <li><a href="#about">
+      <span class="lang-de-inline">Über uns</span>
+      <span class="lang-en-inline">About</span>
+    </a></li>
+    <li><a href="#ingredients">
+      <span class="lang-de-inline">Inhaltsstoffe</span>
+      <span class="lang-en-inline">Ingredients</span>
+    </a></li>
+  </ul>
+  <div class="nav-actions">
+    <span class="nav-lang active" onclick="setLang('de')" id="lang-de">DE</span>
+    <span style="color:#2E2D2A; font-size:11px;">|</span>
+    <span class="nav-lang" onclick="setLang('en')" id="lang-en">EN</span>
+    <a href="#" class="nav-cart">
+      <span class="lang-de-inline">Warenkorb (0)</span>
+      <span class="lang-en-inline">Cart (0)</span>
+    </a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid">
+    <div class="hero-content">
+      <p class="hero-eyebrow">
+        <span class="lang-de-inline">Clean Skincare — Für jede Haut</span>
+        <span class="lang-en-inline">Clean Skincare — For every skin</span>
+      </p>
+      <h1 class="hero-title">
+        <span class="lang-de-inline">Stärke in<br>jeder <em>Schicht.</em></span>
+        <span class="lang-en-inline">Strength in<br>every <em>layer.</em></span>
+      </h1>
+      <p class="hero-subtitle">
+        <span class="lang-de-inline">SARXON — Clean Beauty für jeden Menschen. Keine Kompromisse bei Inhaltsstoffen. Keine Kompromisse bei Ergebnissen.</span>
+        <span class="lang-en-inline">SARXON — Clean beauty for every person. No compromises on ingredients. No compromises on results.</span>
+      </p>
+      <div class="hero-actions">
+        <a href="#products" class="btn-primary">
+          <span class="lang-de-inline">Produkte entdecken</span>
+          <span class="lang-en-inline">Discover products</span>
+        </a>
+        <a href="#routine" class="btn-secondary">
+          <span class="lang-de-inline">Meine Routine →</span>
+          <span class="lang-en-inline">My routine →</span>
+        </a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="product-showcase">
+        <div class="product-card-3d">
+          <p class="pc-brand">SARXON</p>
+          <div class="pc-line"></div>
+          <p class="pc-name">peptide boost</p>
+          <p class="pc-desc">peptide serum</p>
+          <div class="pc-line2"></div>
+          <p class="pc-benefit">firms &amp; lifts over time</p>
+          <p class="pc-volume">30 ml / 1.01 fl oz</p>
+        </div>
+        <div class="floating-badges">
+          <div class="badge">VEGAN</div>
+          <div class="badge">CRUELTY-FREE</div>
+          <div class="badge">EU CERTIFIED</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <span class="scroll-text">scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-section">
+  <div class="marquee-track">
+    <span class="marquee-item">CLEAN BEAUTY <span class="marquee-dot">✦</span></span>
+    <span class="marquee-item">UNISEX SKINCARE <span class="marquee-dot">✦</span></span>
+    <span class="marquee-item">VEGAN & CRUELTY-FREE <span class="marquee-dot">✦</span></span>
+    <span class="marquee-item">EU CERTIFIED <span class="marquee-dot">✦</span></span>
+    <span class="marquee-item">NATURAL INGREDIENTS <span class="marquee-dot">✦</span></span>
+    <span class="marquee-item">FOR EVERY SKIN <span class="marquee-dot">✦</span></span>
+    <span class="marquee-item">CLEAN BEAUTY <span class="marquee-dot">✦</span></span>
+    <span class="marquee-item">UNISEX SKINCARE <span class="marquee-dot">✦</span></span>
+    <span class="marquee-item">VEGAN & CRUELTY-FREE <span class="marquee-dot">✦</span></span>
+    <span class="marquee-item">EU CERTIFIED <span class="marquee-dot">✦</span></span>
+    <span class="marquee-item">NATURAL INGREDIENTS <span class="marquee-dot">✦</span></span>
+    <span class="marquee-item">FOR EVERY SKIN <span class="marquee-dot">✦</span></span>
+  </div>
+</div>
+
+<!-- PRODUCTS -->
+<section id="products">
+  <div class="section">
+    <div class="section-header reveal">
+      <div>
+        <p class="section-eyebrow">
+          <span class="lang-de-inline">Gesichtspflege</span>
+          <span class="lang-en-inline">Face Care</span>
+        </p>
+        <h2 class="section-title">
+          <span class="lang-de-inline">Die <em>Essentials</em></span>
+          <span class="lang-en-inline">The <em>Essentials</em></span>
+        </h2>
+      </div>
+      <a href="#" class="section-link">
+        <span class="lang-de-inline">Alle ansehen →</span>
+        <span class="lang-en-inline">View all →</span>
+      </a>
+    </div>
+
+    <div class="products-grid">
+      <div class="product-item reveal">
+        <p class="pi-number">01</p>
+        <p class="pi-brand">SARXON</p>
+        <div class="pi-line"></div>
+        <p class="pi-name">clear wash</p>
+        <p class="pi-desc">
+          <span class="lang-de-inline">klärendes gel-reiniger</span>
+          <span class="lang-en-inline">clarifying gel cleanser</span>
+        </p>
+        <div class="pi-line2"></div>
+        <p class="pi-benefit">clears &amp; balances skin</p>
+        <div class="pi-footer">
+          <span class="pi-price">€29</span>
+          <span class="pi-add">
+            <span class="lang-de-inline">In den Warenkorb →</span>
+            <span class="lang-en-inline">Add to cart →</span>
+          </span>
+        </div>
+      </div>
+
+      <div class="product-item reveal">
+        <p class="pi-number">02</p>
+        <p class="pi-brand">SARXON</p>
+        <div class="pi-line"></div>
+        <p class="pi-name">fresh mist</p>
+        <p class="pi-desc">microbiome face mist</p>
+        <div class="pi-line2"></div>
+        <p class="pi-benefit">instant hydration boost</p>
+        <div class="pi-footer">
+          <span class="pi-price">€29</span>
+          <span class="pi-add">
+            <span class="lang-de-inline">In den Warenkorb →</span>
+            <span class="lang-en-inline">Add to cart →</span>
+          </span>
+        </div>
+      </div>
+
+      <div class="product-item reveal">
+        <p class="pi-number">03</p>
+        <p class="pi-brand">SARXON</p>
+        <div class="pi-line"></div>
+        <p class="pi-name">vitamin boost</p>
+        <p class="pi-desc">vitamin c serum</p>
+        <div class="pi-line2"></div>
+        <p class="pi-benefit">brightens &amp; protects skin</p>
+        <div class="pi-footer">
+          <span class="pi-price">€32</span>
+          <span class="pi-add">
+            <span class="lang-de-inline">In den Warenkorb →</span>
+            <span class="lang-en-inline">Add to cart →</span>
+          </span>
+        </div>
+      </div>
+
+      <div class="product-item reveal">
+        <p class="pi-number">04</p>
+        <p class="pi-brand">SARXON</p>
+        <div class="pi-line"></div>
+        <p class="pi-name">peptide boost</p>
+        <p class="pi-desc">peptide serum</p>
+        <div class="pi-line2"></div>
+        <p class="pi-benefit">firms &amp; lifts over time</p>
+        <div class="pi-footer">
+          <span class="pi-price">€34</span>
+          <span class="pi-add">
+            <span class="lang-de-inline">In den Warenkorb →</span>
+            <span class="lang-en-inline">Add to cart →</span>
+          </span>
+        </div>
+      </div>
+
+      <div class="product-item reveal">
+        <p class="pi-number">05</p>
+        <p class="pi-brand">SARXON</p>
+        <div class="pi-line"></div>
+        <p class="pi-name">everyday cream</p>
+        <p class="pi-desc">
+          <span class="lang-de-inline">feuchtigkeitsspendende tagescreme</span>
+          <span class="lang-en-inline">moisturising day cream</span>
+        </p>
+        <div class="pi-line2"></div>
+        <p class="pi-benefit">lightweight daily hydration</p>
+        <div class="pi-footer">
+          <span class="pi-price">€32</span>
+          <span class="pi-add">
+            <span class="lang-de-inline">In den Warenkorb →</span>
+            <span class="lang-en-inline">Add to cart →</span>
+          </span>
+        </div>
+      </div>
+
+      <div class="product-item reveal">
+        <p class="pi-number">06</p>
+        <p class="pi-brand">SARXON</p>
+        <div class="pi-line"></div>
+        <p class="pi-name">barrier shield</p>
+        <p class="pi-desc">ceramide barrier cream</p>
+        <div class="pi-line2"></div>
+        <p class="pi-benefit">strengthens skin's barrier</p>
+        <div class="pi-footer">
+          <span class="pi-price">€40</span>
+          <span class="pi-add">
+            <span class="lang-de-inline">In den Warenkorb →</span>
+            <span class="lang-en-inline">Add to cart →</span>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Body Care -->
+    <div class="section-header reveal" style="margin-top:80px;">
+      <div>
+        <p class="section-eyebrow">
+          <span class="lang-de-inline">Körperpflege</span>
+          <span class="lang-en-inline">Body Care</span>
+        </p>
+        <h2 class="section-title">
+          <span class="lang-de-inline">Body <em>Essentials</em></span>
+          <span class="lang-en-inline">Body <em>Essentials</em></span>
+        </h2>
+      </div>
+    </div>
+
+    <div class="products-grid" style="grid-template-columns: repeat(2,1fr);">
+      <div class="product-item reveal">
+        <p class="pi-number">07</p>
+        <p class="pi-brand">SARXON</p>
+        <div class="pi-line"></div>
+        <p class="pi-name">lava reveal</p>
+        <p class="pi-desc">volcanic body scrub</p>
+        <div class="pi-line2"></div>
+        <p class="pi-benefit">reveals your best skin</p>
+        <div class="pi-footer">
+          <span class="pi-price">€33</span>
+          <span class="pi-add">
+            <span class="lang-de-inline">In den Warenkorb →</span>
+            <span class="lang-en-inline">Add to cart →</span>
+          </span>
+        </div>
+      </div>
+
+      <div class="product-item reveal">
+        <p class="pi-number">08</p>
+        <p class="pi-brand">SARXON</p>
+        <div class="pi-line"></div>
+        <p class="pi-name">omega oil</p>
+        <p class="pi-desc">nourishing body oil</p>
+        <div class="pi-line2"></div>
+        <p class="pi-benefit">deeply nourishes dry skin</p>
+        <div class="pi-footer">
+          <span class="pi-price">€40</span>
+          <span class="pi-add">
+            <span class="lang-de-inline">In den Warenkorb →</span>
+            <span class="lang-en-inline">Add to cart →</span>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ROUTINE -->
+<section id="routine" class="routine-section">
+  <div class="routine-inner">
+    <div class="reveal">
+      <p class="section-eyebrow">
+        <span class="lang-de-inline">Die Routine</span>
+        <span class="lang-en-inline">The Routine</span>
+      </p>
+      <h2 class="section-title">
+        <span class="lang-de-inline">Bau deine <em>eigene</em> Routine</span>
+        <span class="lang-en-inline">Build your <em>own</em> routine</span>
+      </h2>
+    </div>
+
+    <div class="routine-grid">
+      <div class="routine-steps">
+        <div class="routine-step reveal">
+          <span class="rs-num">01</span>
+          <div class="rs-content">
+            <p class="rs-name">clear wash</p>
+            <p class="rs-desc">
+              <span class="lang-de-inline">Reinigung — Morgens &amp; Abends</span>
+              <span class="lang-en-inline">Cleanse — Morning &amp; Evening</span>
+            </p>
+          </div>
+          <span class="rs-time">AM / PM</span>
+        </div>
+
+        <div class="routine-step reveal">
+          <span class="rs-num">02</span>
+          <div class="rs-content">
+            <p class="rs-name">fresh mist</p>
+            <p class="rs-desc">
+              <span class="lang-de-inline">Hydration — Sofort nach Reinigung</span>
+              <span class="lang-en-inline">Hydrate — Right after cleansing</span>
+            </p>
+          </div>
+          <span class="rs-time">AM / PM</span>
+        </div>
+
+        <div class="routine-step reveal">
+          <span class="rs-num">03</span>
+          <div class="rs-content">
+            <p class="rs-name">vitamin boost</p>
+            <p class="rs-desc">
+              <span class="lang-de-inline">Vitamin C — Nur morgens</span>
+              <span class="lang-en-inline">Vitamin C — Morning only</span>
+            </p>
+          </div>
+          <span class="rs-time">AM</span>
+        </div>
+
+        <div class="routine-step reveal">
+          <span class="rs-num">04</span>
+          <div class="rs-content">
+            <p class="rs-name">peptide boost</p>
+            <p class="rs-desc">
+              <span class="lang-de-inline">Peptide Serum — Täglich</span>
+              <span class="lang-en-inline">Peptide Serum — Daily</span>
+            </p>
+          </div>
+          <span class="rs-time">AM / PM</span>
+        </div>
+
+        <div class="routine-step reveal">
+          <span class="rs-num">05</span>
+          <div class="rs-content">
+            <p class="rs-name">everyday cream</p>
+            <p class="rs-desc">
+              <span class="lang-de-inline">Feuchtigkeitspflege — Morgens</span>
+              <span class="lang-en-inline">Moisturise — Morning</span>
+            </p>
+          </div>
+          <span class="rs-time">AM</span>
+        </div>
+
+        <div class="routine-step reveal">
+          <span class="rs-num">06</span>
+          <div class="rs-content">
+            <p class="rs-name">barrier shield</p>
+            <p class="rs-desc">
+              <span class="lang-de-inline">Barriere stärken — Abends</span>
+              <span class="lang-en-inline">Barrier repair — Evening</span>
+            </p>
+          </div>
+          <span class="rs-time">PM</span>
+        </div>
+      </div>
+
+      <div class="routine-info">
+        <div class="routine-card reveal">
+          <p class="rc-label">
+            <span class="lang-de-inline">SARXON Philosophie</span>
+            <span class="lang-en-inline">SARXON Philosophy</span>
+          </p>
+          <h3 class="rc-title">
+            <span class="lang-de-inline">Jede Haut ist anders.</span>
+            <span class="lang-en-inline">Every skin is different.</span>
+          </h3>
+          <p class="rc-desc">
+            <span class="lang-de-inline">Keine feste Routine. Keine Vorschriften. Wähle was deine Haut braucht — heute, morgen, immer.</span>
+            <span class="lang-en-inline">No fixed routine. No rules. Choose what your skin needs — today, tomorrow, always.</span>
+          </p>
+          <div class="rc-tags">
+            <span class="rc-tag">Unisex</span>
+            <span class="rc-tag">Alle Hauttypen</span>
+            <span class="rc-tag">Clean Beauty</span>
+            <span class="rc-tag">Vegan</span>
+            <span class="rc-tag">EU Zertifiziert</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" class="about-section">
+  <div class="about-grid">
+    <div class="about-content reveal">
+      <h2 class="about-title">
+        <span class="lang-de-inline">Wir glauben an<br><em>starke</em> Haut.</span>
+        <span class="lang-en-inline">We believe in<br><em>strong</em> skin.</span>
+      </h2>
+      <p class="about-text">
+        <span class="lang-de-inline">SARXON wurde mit einer einfachen Überzeugung gegründet: Hautpflege sollte für alle funktionieren. Keine Geschlechter, keine Einschränkungen. Nur wirksame, saubere Inhaltsstoffe die echte Ergebnisse liefern.</span>
+        <span class="lang-en-inline">SARXON was founded with a simple belief: skincare should work for everyone. No genders, no restrictions. Just effective, clean ingredients that deliver real results.</span>
+      </p>
+      <div class="about-stats">
+        <div class="stat">
+          <p class="stat-num">9+</p>
+          <p class="stat-label">
+            <span class="lang-de-inline">Produkte</span>
+            <span class="lang-en-inline">Products</span>
+          </p>
+        </div>
+        <div class="stat">
+          <p class="stat-num">100%</p>
+          <p class="stat-label">Vegan</p>
+        </div>
+        <div class="stat">
+          <p class="stat-num">EU</p>
+          <p class="stat-label">
+            <span class="lang-de-inline">Zertifiziert</span>
+            <span class="lang-en-inline">Certified</span>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="about-visual reveal">
+      <div class="about-card">
+        <p class="ac-quote">
+          <span class="lang-de-inline">"Stärke in jeder Schicht."</span>
+          <span class="lang-en-inline">"Strength in every layer."</span>
+        </p>
+        <p class="ac-author">SARXON — Clean Skincare</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INGREDIENTS -->
+<section id="ingredients" class="ingredients-section">
+  <div class="ingredients-inner">
+    <div class="reveal">
+      <p class="section-eyebrow">
+        <span class="lang-de-inline">Schlüsselinhaltsstoffe</span>
+        <span class="lang-en-inline">Key Ingredients</span>
+      </p>
+      <h2 class="section-title">
+        <span class="lang-de-inline">Was wirklich <em>wirkt</em></span>
+        <span class="lang-en-inline">What really <em>works</em></span>
+      </h2>
+    </div>
+
+    <div class="ingredients-grid">
+      <div class="ingredient-card reveal">
+        <div class="ic-icon">🌋</div>
+        <p class="ic-name">Volcanic Sand</p>
+        <p class="ic-origin">Island</p>
+        <p class="ic-desc">
+          <span class="lang-de-inline">Natürliches isländisches Vulkangestein für sanftes aber effektives Peeling.</span>
+          <span class="lang-en-inline">Natural Icelandic volcanic rock for gentle but effective exfoliation.</span>
+        </p>
+      </div>
+
+      <div class="ingredient-card reveal">
+        <div class="ic-icon">🫐</div>
+        <p class="ic-name">Cloudberry</p>
+        <p class="ic-origin">Skandinavien</p>
+        <p class="ic-desc">
+          <span class="lang-de-inline">Nordische Superfrucht reich an Omega-Fettsäuren und Antioxidantien.</span>
+          <span class="lang-en-inline">Nordic superfruit rich in omega fatty acids and antioxidants.</span>
+        </p>
+      </div>
+
+      <div class="ingredient-card reveal">
+        <div class="ic-icon">🌿</div>
+        <p class="ic-name">Sea Buckthorn</p>
+        <p class="ic-origin">Baltikum</p>
+        <p class="ic-desc">
+          <span class="lang-de-inline">Omega 3, 6, 7 und 9 für intensiven Glow und Hauterneuerung.</span>
+          <span class="lang-en-inline">Omega 3, 6, 7 and 9 for intense glow and skin renewal.</span>
+        </p>
+      </div>
+
+      <div class="ingredient-card reveal">
+        <div class="ic-icon">💧</div>
+        <p class="ic-name">Hyaluronic Acid</p>
+        <p class="ic-origin">Bio-Fermentation</p>
+        <p class="ic-desc">
+          <span class="lang-de-inline">Doppeltes Hyaluron für tiefe und oberflächliche Hydration.</span>
+          <span class="lang-en-inline">Double hyaluron for deep and surface hydration.</span>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NEWSLETTER -->
+<section class="newsletter-section reveal">
+  <p class="nl-eyebrow">Newsletter</p>
+  <h2 class="nl-title">
+    <span class="lang-de-inline">Bleib <em>informiert</em></span>
+    <span class="lang-en-inline">Stay <em>informed</em></span>
+  </h2>
+  <p class="nl-desc">
+    <span class="lang-de-inline">Neue Produkte, exklusive Angebote und Skincare-Tipps direkt in dein Postfach.</span>
+    <span class="lang-en-inline">New products, exclusive offers and skincare tips directly to your inbox.</span>
+  </p>
+  <div class="nl-form">
+    <input type="email" class="nl-input" placeholder="deine@email.de">
+    <button class="nl-btn">
+      <span class="lang-de-inline">Anmelden</span>
+      <span class="lang-en-inline">Subscribe</span>
+    </button>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <p class="footer-logo">SARXON</p>
+      <p class="footer-tagline">"Strength in every layer."</p>
+      <div class="footer-social">
+        <a href="#" class="social-link">Instagram</a>
+        <a href="#" class="social-link">TikTok</a>
+        <a href="#" class="social-link">Pinterest</a>
+      </div>
+    </div>
+
+    <div>
+      <p class="footer-col-title">
+        <span class="lang-de-inline">Produkte</span>
+        <span class="lang-en-inline">Products</span>
+      </p>
+      <ul class="footer-links">
+        <li><a href="#">clear wash</a></li>
+        <li><a href="#">fresh mist</a></li>
+        <li><a href="#">vitamin boost</a></li>
+        <li><a href="#">peptide boost</a></li>
+        <li><a href="#">everyday cream</a></li>
+        <li><a href="#">barrier shield</a></li>
+        <li><a href="#">lava reveal</a></li>
+        <li><a href="#">omega oil</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <p class="footer-col-title">
+        <span class="lang-de-inline">Info</span>
+        <span class="lang-en-inline">Info</span>
+      </p>
+      <ul class="footer-links">
+        <li><a href="#">
+          <span class="lang-de-inline">Über SARXON</span>
+          <span class="lang-en-inline">About SARXON</span>
+        </a></li>
+        <li><a href="#">
+          <span class="lang-de-inline">Inhaltsstoffe</span>
+          <span class="lang-en-inline">Ingredients</span>
+        </a></li>
+        <li><a href="#">
+          <span class="lang-de-inline">Nachhaltigkeit</span>
+          <span class="lang-en-inline">Sustainability</span>
+        </a></li>
+        <li><a href="#">Blog</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <p class="footer-col-title">
+        <span class="lang-de-inline">Hilfe</span>
+        <span class="lang-en-inline">Help</span>
+      </p>
+      <ul class="footer-links">
+        <li><a href="#">
+          <span class="lang-de-inline">Versand & Lieferung</span>
+          <span class="lang-en-inline">Shipping & Delivery</span>
+        </a></li>
+        <li><a href="#">
+          <span class="lang-de-inline">Rückgabe</span>
+          <span class="lang-en-inline">Returns</span>
+        </a></li>
+        <li><a href="#">FAQ</a></li>
+        <li><a href="#">
+          <span class="lang-de-inline">Kontakt</span>
+          <span class="lang-en-inline">Contact</span>
+        </a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <p class="footer-copy">© 2026 SARXON. 
+      <span class="lang-de-inline">Alle Rechte vorbehalten.</span>
+      <span class="lang-en-inline">All rights reserved.</span>
+    </p>
+    <div class="footer-legal">
+      <a href="#">
+        <span class="lang-de-inline">Impressum</span>
+        <span class="lang-en-inline">Imprint</span>
+      </a>
+      <a href="#">
+        <span class="lang-de-inline">Datenschutz</span>
+        <span class="lang-en-inline">Privacy</span>
+      </a>
+      <a href="#">AGB</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const follower = document.getElementById('cursorFollower');
+  let mouseX = 0, mouseY = 0;
+  let followerX = 0, followerY = 0;
+
+  document.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    cursor.style.left = mouseX + 'px';
+    cursor.style.top = mouseY + 'px';
+  });
+
+  function animateFollower() {
+    followerX += (mouseX - followerX) * 0.12;
+    followerY += (mouseY - followerY) * 0.12;
+    follower.style.left = followerX + 'px';
+    follower.style.top = followerY + 'px';
+    requestAnimationFrame(animateFollower);
+  }
+  animateFollower();
+
+  document.querySelectorAll('a, button, .product-item').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.width = '16px';
+      cursor.style.height = '16px';
+      follower.style.width = '48px';
+      follower.style.height = '48px';
+    });
+    el.addEventListener('mouseleave', () => {
+      cursor.style.width = '8px';
+      cursor.style.height = '8px';
+      follower.style.width = '32px';
+      follower.style.height = '32px';
+    });
+  });
+
+  // Language switcher
+  function setLang(lang) {
+    document.body.className = 'lang-' + lang;
+    document.getElementById('lang-de').classList.toggle('active', lang === 'de');
+    document.getElementById('lang-en').classList.toggle('active', lang === 'en');
+  }
+
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => {
+          entry.target.classList.add('visible');
+        }, i * 80);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // Nav scroll effect
+  const nav = document.querySelector('nav');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 80) {
+      nav.style.background = 'rgba(13,13,11,0.95)';
+    } else {
+      nav.style.background = 'linear-gradient(to bottom, rgba(13,13,11,0.95), transparent)';
+    }
+  });
+</script>
+</body>
+</html>
